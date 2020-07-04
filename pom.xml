@@ -66,12 +66,43 @@
         </dependency>
     </dependencies>
 
+    <distributionManagement>
+    <repository>
+        <id>releases</id><!--这个ID需要与你的release仓库的Repository ID一致-->
+        <url>http://49.235.16.187:8888/nexus/content/repositories/releases</url>
+    </repository>
+    <snapshotRepository>
+        <id>snapshots</id><!--这个ID需要与你的snapshots仓库的Repository ID一致-->
+        <url>http://49.235.16.187:8888/nexus/content/repositories/snapshots</url>
+    </snapshotRepository>
+</distributionManagement>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
+            <plugin>
+		<groupId>com.spotify</groupId>
+		<artifactId>docker-maven-plugin</artifactId>
+		<version>0.4.14</version>
+		<configuration>
+            <!-- 项目生成的镜像名称 -->
+			<imageName>${project.name}:${project.version}</imageName>
+			<!-- dockerfile的存放位置 -->
+			<dockerDirectory>${project.basedir}</dockerDirectory>
+			<skipDockerBuild>false</skipDockerBuild>
+			<resources>
+				<resource>
+				<!-- 项目生成war包的的存放位置 -->
+				<directory>${project.build.directory}</directory>
+				<include>${project.build.finalName}.jar</include>
+				</resource>
+			</resources>
+		</configuration>
+	</plugin>
         </plugins>
     </build>
 
